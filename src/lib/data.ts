@@ -139,6 +139,131 @@ export const projects: Project[] = [
       { id: 't20', title: 'Launch Prep', description: 'Performance testing and launch', status: 'todo', priority: 'medium', assignee: 'You', startDate: '2026-06-01', endDate: '2026-06-30', projectId: 'p5' },
     ],
   },
+  // Completed / past projects
+  {
+    id: 'p6',
+    title: 'Landing Page Design',
+    description: 'High-converting landing page for product launch',
+    clientId: 'c1',
+    status: 'done',
+    priority: 'high',
+    startDate: '2025-10-01',
+    endDate: '2025-12-20',
+    color: '#8E24AA',
+    tasks: [
+      { id: 't21', title: 'Copy & Messaging', description: 'Write landing page copy', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-10-01', endDate: '2025-10-20', projectId: 'p6' },
+      { id: 't22', title: 'Visual Design', description: 'Design hero and sections', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-10-21', endDate: '2025-11-15', projectId: 'p6' },
+      { id: 't23', title: 'Development & Launch', description: 'Build and deploy', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-11-16', endDate: '2025-12-20', projectId: 'p6' },
+    ],
+  },
+  {
+    id: 'p7',
+    title: 'Social Media Kit',
+    description: 'Complete social media branding package',
+    clientId: 'c3',
+    status: 'done',
+    priority: 'medium',
+    startDate: '2025-09-15',
+    endDate: '2025-11-30',
+    color: '#FF6D00',
+    tasks: [
+      { id: 't24', title: 'Template Design', description: 'Design post templates', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-09-15', endDate: '2025-10-15', projectId: 'p7' },
+      { id: 't25', title: 'Asset Export', description: 'Export all formats', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-10-16', endDate: '2025-11-30', projectId: 'p7' },
+    ],
+  },
+  {
+    id: 'p8',
+    title: 'CRM Integration',
+    description: 'HubSpot CRM integration with existing platform',
+    clientId: 'c2',
+    status: 'done',
+    priority: 'high',
+    startDate: '2025-07-01',
+    endDate: '2025-10-15',
+    color: '#00897B',
+    tasks: [
+      { id: 't26', title: 'API Setup', description: 'Configure HubSpot API', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-07-01', endDate: '2025-08-01', projectId: 'p8' },
+      { id: 't27', title: 'Data Migration', description: 'Migrate existing contacts', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-08-02', endDate: '2025-09-15', projectId: 'p8' },
+      { id: 't28', title: 'Testing & Launch', description: 'QA and go-live', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-09-16', endDate: '2025-10-15', projectId: 'p8' },
+    ],
+  },
+  {
+    id: 'p9',
+    title: 'Email Campaign Templates',
+    description: 'Responsive email templates for marketing',
+    clientId: 'c1',
+    status: 'done',
+    priority: 'medium',
+    startDate: '2025-07-15',
+    endDate: '2025-09-28',
+    color: '#5C6BC0',
+    tasks: [
+      { id: 't29', title: 'Template Design', description: 'Design 5 email templates', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-07-15', endDate: '2025-08-30', projectId: 'p9' },
+      { id: 't30', title: 'HTML/CSS Build', description: 'Code responsive templates', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-09-01', endDate: '2025-09-28', projectId: 'p9' },
+    ],
+  },
+  {
+    id: 'p10',
+    title: 'Product Photography',
+    description: 'E-commerce product photography direction',
+    clientId: 'c5',
+    status: 'done',
+    priority: 'medium',
+    startDate: '2025-09-01',
+    endDate: '2025-11-10',
+    color: '#F4511E',
+    tasks: [
+      { id: 't31', title: 'Shot List & Direction', description: 'Plan product shoots', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-09-01', endDate: '2025-09-30', projectId: 'p10' },
+      { id: 't32', title: 'Post-Production', description: 'Edit and retouch photos', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-10-01', endDate: '2025-11-10', projectId: 'p10' },
+    ],
+  },
+  {
+    id: 'p11',
+    title: 'SEO Audit & Optimization',
+    description: 'Full site SEO audit and implementation',
+    clientId: 'c4',
+    status: 'done',
+    priority: 'high',
+    startDate: '2025-09-15',
+    endDate: '2025-12-01',
+    color: '#43A047',
+    tasks: [
+      { id: 't33', title: 'Technical Audit', description: 'Crawl and analyze site', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-09-15', endDate: '2025-10-15', projectId: 'p11' },
+      { id: 't34', title: 'On-Page Optimization', description: 'Meta tags, content fixes', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-10-16', endDate: '2025-11-15', projectId: 'p11' },
+      { id: 't35', title: 'Reporting', description: 'Final report and recommendations', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-11-16', endDate: '2025-12-01', projectId: 'p11' },
+    ],
+  },
+  {
+    id: 'p12',
+    title: 'Newsletter Design System',
+    description: 'Modular newsletter component library',
+    clientId: 'c2',
+    status: 'done',
+    priority: 'low',
+    startDate: '2025-06-01',
+    endDate: '2025-08-20',
+    color: '#039BE5',
+    tasks: [
+      { id: 't36', title: 'Component Design', description: 'Design reusable blocks', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-06-01', endDate: '2025-07-15', projectId: 'p12' },
+      { id: 't37', title: 'Documentation', description: 'Usage guide and examples', status: 'done', priority: 'low', assignee: 'You', startDate: '2025-07-16', endDate: '2025-08-20', projectId: 'p12' },
+    ],
+  },
+  {
+    id: 'p13',
+    title: 'Onboarding Flow Redesign',
+    description: 'Redesign user onboarding experience',
+    clientId: 'c4',
+    status: 'done',
+    priority: 'high',
+    startDate: '2025-08-01',
+    endDate: '2025-10-30',
+    color: '#E53935',
+    tasks: [
+      { id: 't38', title: 'User Research', description: 'Interviews and surveys', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-08-01', endDate: '2025-08-30', projectId: 'p13' },
+      { id: 't39', title: 'Prototype & Test', description: 'Build and test prototypes', status: 'done', priority: 'high', assignee: 'You', startDate: '2025-09-01', endDate: '2025-10-15', projectId: 'p13' },
+      { id: 't40', title: 'Implementation', description: 'Develop final flow', status: 'done', priority: 'medium', assignee: 'You', startDate: '2025-10-16', endDate: '2025-10-30', projectId: 'p13' },
+    ],
+  },
 ];
 
 export const meetings: Meeting[] = [
@@ -210,12 +335,28 @@ export const meetings: Meeting[] = [
   },
 ];
 
+// Only return active (non-done) projects for the Kanban/Gantt views
+export function getActiveProjects(): Project[] {
+  return projects.filter(p => p.status !== 'done');
+}
+
 export function getClientById(id: string): Client | undefined {
   return clients.find(c => c.id === id);
 }
 
 export function getProjectsByClient(clientId: string): Project[] {
   return projects.filter(p => p.clientId === clientId);
+}
+
+export function getActiveProjectsByClient(clientId: string): Project[] {
+  return projects.filter(p => p.clientId === clientId && p.status !== 'done');
+}
+
+export function getPastProjectsByClient(clientId: string): Project[] {
+  return projects
+    .filter(p => p.clientId === clientId && p.status === 'done')
+    .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+    .slice(0, 10);
 }
 
 export function getMeetingsByClient(clientId: string): Meeting[] {

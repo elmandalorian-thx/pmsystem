@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getClientById, getProjectsByClient, getMeetingsByClient, clients } from '@/lib/data';
-import { Mail, Phone, Building2, Calendar, ArrowLeft, Plus, Clock, Flag, CheckCircle2, FileText, Mic, ChevronDown, ChevronRight } from 'lucide-react';
+import { getClientById, getActiveProjectsByClient, getPastProjectsByClient, getMeetingsByClient, clients } from '@/lib/data';
+import { Mail, Phone, Building2, Calendar, ArrowLeft, Plus, Clock, Flag, CheckCircle2, FileText, Mic, ChevronDown, ChevronRight, FolderCheck } from 'lucide-react';
 import Link from 'next/link';
 import AddProjectModal from '@/components/AddProjectModal';
 import { PRIORITY_COLORS } from '@/lib/types';
@@ -14,19 +14,21 @@ export default function ClientDetailPage() {
   const params = useParams();
   const clientId = params.id as string;
   const client = getClientById(clientId);
-  const clientProjects = getProjectsByClient(clientId);
+  const activeProjects = getActiveProjectsByClient(clientId);
+  const pastProjects = getPastProjectsByClient(clientId);
   const clientMeetings = getMeetingsByClient(clientId);
   const [showAddProject, setShowAddProject] = useState(false);
   const [expandedMeetings, setExpandedMeetings] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<'projects' | 'meetings'>('projects');
+  const [pastProjectsOpen, setPastProjectsOpen] = useState(false);
 
   if (!client) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="text-center">
-          <p className="text-6xl mb-4">🔍</p>
-          <h2 className="text-xl font-black mb-2">Client not found</h2>
-          <Link href="/clients" className="text-[#4285F4] font-bold hover:underline">
+          <p className="text-5xl mb-4">🔍</p>
+          <h2 className="text-lg font-black mb-2">Client not found</h2>
+          <Link href="/clients" className="text-[#4285F4] font-bold text-sm hover:underline">
             Back to clients
           </Link>
         </div>
@@ -35,8 +37,9 @@ export default function ClientDetailPage() {
   }
 
   const clientIndex = clients.indexOf(client);
-  const totalTasks = clientProjects.reduce((a, p) => a + p.tasks.length, 0);
-  const doneTasks = clientProjects.reduce((a, p) => a + p.tasks.filter(t => t.status === 'done').length, 0);
+  const allProjects = [...activeProjects, ...pastProjects];
+  const totalTasks = allProjects.reduce((a, p) => a + p.tasks.length, 0);
+  const doneTasks = allProjects.reduce((a, p) => a + p.tasks.filter(t => t.status === 'done').length, 0);
 
   const toggleMeeting = (id: string) => {
     setExpandedMeetings(prev => {
@@ -52,29 +55,29 @@ export default function ClientDetailPage() {
       {/* Back button */}
       <Link
         href="/clients"
-        className="inline-flex items-center gap-2 text-[#AFAFAF] font-bold text-sm mb-6 hover:text-[#3C3C3C] transition-colors"
+        className="inline-flex items-center gap-1.5 text-[#AFAFAF] font-bold text-xs mb-4 hover:text-[#3C3C3C] transition-colors"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={14} />
         Back to Clients
       </Link>
 
       {/* Client Header */}
-      <div className="duo-card mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+      <div className="duo-card mb-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <div
             className="avatar"
             style={{
               background: AVATAR_COLORS[clientIndex % AVATAR_COLORS.length],
-              width: 64,
-              height: 64,
-              fontSize: 24,
+              width: 48,
+              height: 48,
+              fontSize: 18,
             }}
           >
             {client.avatar}
           </div>
-          <div className="flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-              <h1 className="text-2xl font-black">{client.name}</h1>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-0.5">
+              <h1 className="text-lg sm:text-xl font-black truncate">{client.name}</h1>
               <span
                 className="badge w-fit"
                 style={{ background: '#E6F4EA', color: '#34A853' }}
@@ -82,51 +85,51 @@ export default function ClientDetailPage() {
                 {client.status}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-sm text-[#AFAFAF] font-semibold">
-              <span className="flex items-center gap-1"><Building2 size={14} /> {client.company}</span>
-              <span className="flex items-center gap-1"><Mail size={14} /> {client.email}</span>
-              <span className="flex items-center gap-1"><Phone size={14} /> {client.phone}</span>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-[#AFAFAF] font-semibold">
+              <span className="flex items-center gap-1"><Building2 size={12} /> {client.company}</span>
+              <span className="flex items-center gap-1"><Mail size={12} /> {client.email}</span>
+              <span className="hidden sm:flex items-center gap-1"><Phone size={12} /> {client.phone}</span>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-4 sm:gap-3 mt-2 sm:mt-0">
             <div className="text-center">
-              <p className="text-2xl font-black text-[#4285F4]">{clientProjects.length}</p>
-              <p className="text-xs font-bold text-[#AFAFAF]">Projects</p>
+              <p className="text-lg sm:text-xl font-black text-[#4285F4]">{activeProjects.length}</p>
+              <p className="text-[10px] font-bold text-[#AFAFAF]">Active</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-black text-[#34A853]">{doneTasks}/{totalTasks}</p>
-              <p className="text-xs font-bold text-[#AFAFAF]">Tasks Done</p>
+              <p className="text-lg sm:text-xl font-black text-[#34A853]">{doneTasks}/{totalTasks}</p>
+              <p className="text-[10px] font-bold text-[#AFAFAF]">Tasks</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-black text-[#FBBC04]">{clientMeetings.length}</p>
-              <p className="text-xs font-bold text-[#AFAFAF]">Meetings</p>
+              <p className="text-lg sm:text-xl font-black text-[#FBBC04]">{clientMeetings.length}</p>
+              <p className="text-[10px] font-bold text-[#AFAFAF]">Meetings</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-4">
         <button
           onClick={() => setActiveTab('projects')}
-          className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`px-4 py-2 rounded-xl font-bold text-xs transition-all ${
             activeTab === 'projects'
-              ? 'bg-[#4285F4] text-white shadow-[0_4px_0_#3367D6]'
+              ? 'bg-[#4285F4] text-white shadow-[0_3px_0_#3367D6]'
               : 'bg-white border-2 border-[#E5E5E5] text-[#AFAFAF] hover:bg-[#F0F0F0]'
           }`}
         >
-          <FileText size={16} className="inline mr-2" />
-          Projects ({clientProjects.length})
+          <FileText size={14} className="inline mr-1.5" />
+          Projects ({activeProjects.length})
         </button>
         <button
           onClick={() => setActiveTab('meetings')}
-          className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+          className={`px-4 py-2 rounded-xl font-bold text-xs transition-all ${
             activeTab === 'meetings'
-              ? 'bg-[#4285F4] text-white shadow-[0_4px_0_#3367D6]'
+              ? 'bg-[#4285F4] text-white shadow-[0_3px_0_#3367D6]'
               : 'bg-white border-2 border-[#E5E5E5] text-[#AFAFAF] hover:bg-[#F0F0F0]'
           }`}
         >
-          <Mic size={16} className="inline mr-2" />
+          <Mic size={14} className="inline mr-1.5" />
           Meetings ({clientMeetings.length})
         </button>
       </div>
@@ -134,39 +137,39 @@ export default function ClientDetailPage() {
       {/* Projects Tab */}
       {activeTab === 'projects' && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-black">Active Projects</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-black">Active Projects</h2>
             <button
               onClick={() => setShowAddProject(true)}
-              className="btn-primary flex items-center gap-2 !py-2 !px-4 text-sm"
+              className="btn-primary flex items-center gap-1.5 !py-1.5 !px-3 !text-xs !rounded-lg"
             >
-              <Plus size={16} />
+              <Plus size={14} />
               Add Project
             </button>
           </div>
-          <div className="space-y-4">
-            {clientProjects.map(project => {
+          <div className="space-y-3">
+            {activeProjects.map(project => {
               const progress = project.tasks.length > 0
                 ? Math.round((project.tasks.filter(t => t.status === 'done').length / project.tasks.length) * 100)
                 : 0;
               return (
                 <div key={project.id} className="duo-card">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
                     <div
-                      className="w-3 h-3 rounded-full shrink-0"
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
                       style={{ background: project.color }}
                     />
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg">{project.title}</h3>
-                      <p className="text-sm text-[#AFAFAF] font-semibold">{project.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm">{project.title}</h3>
+                      <p className="text-xs text-[#AFAFAF] font-semibold truncate">{project.description}</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1 text-xs">
-                        <Flag size={12} style={{ color: PRIORITY_COLORS[project.priority] }} />
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-[10px]">
+                        <Flag size={10} style={{ color: PRIORITY_COLORS[project.priority] }} />
                         <span className="font-bold capitalize">{project.priority}</span>
                       </div>
                       <span
-                        className="badge capitalize"
+                        className="badge capitalize !text-[10px] !px-2 !py-0.5"
                         style={{
                           background: project.status === 'done' ? '#E6F4EA'
                             : project.status === 'in-progress' ? '#FEF7E0'
@@ -184,24 +187,24 @@ export default function ClientDetailPage() {
                   </div>
 
                   {/* Task list */}
-                  <div className="space-y-2 mb-3">
+                  <div className="space-y-0.5 mb-2">
                     {project.tasks.map(task => (
                       <div
                         key={task.id}
-                        className="flex items-center gap-3 p-2 rounded-xl hover:bg-[#FAFAFA] transition-colors"
+                        className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-[#FAFAFA] transition-colors"
                       >
                         <CheckCircle2
-                          size={18}
+                          size={15}
                           style={{
                             color: task.status === 'done' ? '#34A853' : '#E5E5E5',
                           }}
                         />
-                        <span className={`flex-1 text-sm font-semibold ${task.status === 'done' ? 'line-through text-[#AFAFAF]' : ''}`}>
+                        <span className={`flex-1 text-xs font-semibold ${task.status === 'done' ? 'line-through text-[#AFAFAF]' : ''}`}>
                           {task.title}
                         </span>
-                        <div className="flex items-center gap-1 text-xs text-[#AFAFAF]">
-                          <Clock size={12} />
-                          <span className="font-semibold">
+                        <div className="flex items-center gap-1 text-[10px] text-[#AFAFAF]">
+                          <Clock size={10} />
+                          <span className="font-semibold hidden sm:inline">
                             {new Date(task.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
@@ -220,9 +223,9 @@ export default function ClientDetailPage() {
                     />
                   </div>
                   <div className="flex justify-between mt-1">
-                    <p className="text-xs font-bold text-[#AFAFAF]">{progress}% complete</p>
-                    <p className="text-xs font-bold text-[#AFAFAF]">
-                      <Calendar size={10} className="inline mr-1" />
+                    <p className="text-[10px] font-bold text-[#AFAFAF]">{progress}% complete</p>
+                    <p className="text-[10px] font-bold text-[#AFAFAF]">
+                      <Calendar size={9} className="inline mr-0.5" />
                       Due {new Date(project.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
@@ -230,19 +233,66 @@ export default function ClientDetailPage() {
               );
             })}
           </div>
+
+          {/* Past Projects Collapsible Dropdown */}
+          {pastProjects.length > 0 && (
+            <div className="mt-4">
+              <button
+                onClick={() => setPastProjectsOpen(!pastProjectsOpen)}
+                className="w-full flex items-center gap-2 p-3 bg-white border-2 border-[#E5E5E5] rounded-xl hover:bg-[#FAFAFA] transition-colors"
+              >
+                <FolderCheck size={16} className="text-[#34A853]" />
+                <span className="text-xs font-black flex-1 text-left">
+                  Past Projects ({pastProjects.length})
+                </span>
+                {pastProjectsOpen
+                  ? <ChevronDown size={16} className="text-[#AFAFAF]" />
+                  : <ChevronRight size={16} className="text-[#AFAFAF]" />
+                }
+              </button>
+
+              {pastProjectsOpen && (
+                <div className="mt-2 space-y-1.5 animate-[fadeIn_0.2s_ease]">
+                  {pastProjects.map(project => (
+                    <div
+                      key={project.id}
+                      className="flex items-center gap-3 p-3 bg-white border border-[#E5E5E5] rounded-xl hover:bg-[#FAFAFA] transition-colors"
+                    >
+                      <div
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ background: project.color }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold truncate">{project.title}</p>
+                        <p className="text-[10px] text-[#AFAFAF] font-semibold truncate">{project.description}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="badge !text-[9px] !px-1.5 !py-0.5" style={{ background: '#E6F4EA', color: '#34A853' }}>
+                          Completed
+                        </span>
+                        <p className="text-[10px] text-[#AFAFAF] font-semibold mt-0.5">
+                          {new Date(project.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
       {/* Meetings Tab */}
       {activeTab === 'meetings' && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-black">Meeting History</h2>
-            <span className="badge" style={{ background: '#E8F0FE', color: '#4285F4' }}>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-black">Meeting History</h2>
+            <span className="badge !text-[10px]" style={{ background: '#E8F0FE', color: '#4285F4' }}>
               Powered by Fireflies.ai
             </span>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {clientMeetings.map(meeting => {
               const isExpanded = expandedMeetings.has(meeting.id);
               return (
@@ -251,25 +301,25 @@ export default function ClientDetailPage() {
                     onClick={() => toggleMeeting(meeting.id)}
                     className="w-full text-left"
                   >
-                    <div className="flex items-center gap-3">
-                      {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                      <Mic size={18} className="text-[#4285F4]" />
+                    <div className="flex items-center gap-2">
+                      {isExpanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+                      <Mic size={15} className="text-[#4285F4]" />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold">{meeting.title}</h3>
-                        <div className="flex flex-wrap gap-2 text-xs text-[#AFAFAF] font-semibold mt-1">
-                          <span className="flex items-center gap-1">
-                            <Calendar size={12} />
+                        <h3 className="font-bold text-xs">{meeting.title}</h3>
+                        <div className="flex flex-wrap gap-x-2 text-[10px] text-[#AFAFAF] font-semibold mt-0.5">
+                          <span className="flex items-center gap-0.5">
+                            <Calendar size={10} />
                             {new Date(meeting.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Clock size={12} />
+                          <span className="flex items-center gap-0.5">
+                            <Clock size={10} />
                             {meeting.duration} min
                           </span>
-                          <span>{meeting.attendees.join(', ')}</span>
+                          <span className="hidden sm:inline">{meeting.attendees.join(', ')}</span>
                         </div>
                       </div>
                       {meeting.firefliesId && (
-                        <span className="badge shrink-0" style={{ background: '#E8F0FE', color: '#4285F4' }}>
+                        <span className="badge shrink-0 !text-[9px] !px-1.5 hidden sm:flex" style={{ background: '#E8F0FE', color: '#4285F4' }}>
                           🔥 Fireflies
                         </span>
                       )}
@@ -277,35 +327,32 @@ export default function ClientDetailPage() {
                   </button>
 
                   {isExpanded && (
-                    <div className="mt-4 pl-10 space-y-4">
-                      {/* Summary */}
+                    <div className="mt-3 pl-4 sm:pl-8 space-y-3">
                       <div>
-                        <h4 className="text-xs font-bold text-[#AFAFAF] uppercase mb-2">Summary</h4>
-                        <p className="text-sm font-semibold leading-relaxed bg-[#FAFAFA] rounded-xl p-3">
+                        <h4 className="text-[10px] font-bold text-[#AFAFAF] uppercase mb-1">Summary</h4>
+                        <p className="text-xs font-semibold leading-relaxed bg-[#FAFAFA] rounded-xl p-2.5">
                           {meeting.summary}
                         </p>
                       </div>
 
-                      {/* Action Items */}
                       <div>
-                        <h4 className="text-xs font-bold text-[#AFAFAF] uppercase mb-2">Action Items</h4>
+                        <h4 className="text-[10px] font-bold text-[#AFAFAF] uppercase mb-1">Action Items</h4>
                         <div className="space-y-1">
                           {meeting.actionItems.map((item, i) => (
-                            <div key={i} className="flex items-center gap-2 text-sm font-semibold">
-                              <CheckCircle2 size={16} className="text-[#E5E5E5] shrink-0" />
+                            <div key={i} className="flex items-center gap-1.5 text-xs font-semibold">
+                              <CheckCircle2 size={13} className="text-[#E5E5E5] shrink-0" />
                               {item}
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      {/* Fireflies link */}
                       {meeting.firefliesId && (
-                        <div className="bg-[#E8F0FE] rounded-xl p-3 flex items-center gap-2">
-                          <span className="text-lg">🔥</span>
+                        <div className="bg-[#E8F0FE] rounded-xl p-2.5 flex items-center gap-2">
+                          <span className="text-base">🔥</span>
                           <div>
-                            <p className="text-sm font-bold text-[#4285F4]">View full transcript on Fireflies</p>
-                            <p className="text-xs text-[#AFAFAF] font-semibold">Meeting ID: {meeting.firefliesId}</p>
+                            <p className="text-xs font-bold text-[#4285F4]">View transcript on Fireflies</p>
+                            <p className="text-[10px] text-[#AFAFAF] font-semibold">ID: {meeting.firefliesId}</p>
                           </div>
                         </div>
                       )}

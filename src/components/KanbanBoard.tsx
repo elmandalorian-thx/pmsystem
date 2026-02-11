@@ -39,18 +39,18 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
         {columns.map(col => (
           <div key={col} className="kanban-column">
-            <div className="flex items-center gap-2 mb-4 px-1">
+            <div className="flex items-center gap-2 mb-3 px-1">
               <div
-                className="w-3 h-3 rounded-full"
+                className="w-2.5 h-2.5 rounded-full"
                 style={{ background: COLUMN_COLORS[col] }}
               />
-              <h3 className="font-black text-sm uppercase tracking-wide">
+              <h3 className="font-black text-xs uppercase tracking-wide">
                 {COLUMN_TITLES[col]}
               </h3>
-              <span className="ml-auto bg-white border-2 border-[#E5E5E5] rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold text-[#AFAFAF]">
+              <span className="ml-auto bg-white border-2 border-[#E5E5E5] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold text-[#AFAFAF]">
                 {getColumnProjects(col).length}
               </span>
             </div>
@@ -60,7 +60,7 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className={`min-h-[200px] rounded-2xl transition-colors ${
+                  className={`min-h-[180px] rounded-2xl transition-colors ${
                     snapshot.isDraggingOver ? 'bg-[#E8F0FE]' : ''
                   }`}
                 >
@@ -74,37 +74,37 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`duo-card mb-3 ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}
+                            className={`duo-card mb-2 ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}
                           >
                             <div
-                              className="w-full h-2 rounded-full mb-3"
+                              className="w-full h-1.5 rounded-full mb-2"
                               style={{ background: project.color }}
                             />
 
-                            <h4 className="font-bold text-[15px] mb-1">{project.title}</h4>
+                            <h4 className="font-bold text-xs mb-0.5">{project.title}</h4>
 
                             {client && (
                               <Link
                                 href={`/clients/${client.id}`}
-                                className="text-xs text-[#AFAFAF] font-semibold hover:text-[#4285F4] transition-colors flex items-center gap-1 mb-3"
+                                className="text-[10px] text-[#AFAFAF] font-semibold hover:text-[#4285F4] transition-colors flex items-center gap-0.5 mb-2"
                               >
                                 {client.company}
-                                <ChevronRight size={12} />
+                                <ChevronRight size={10} />
                               </Link>
                             )}
 
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className="flex items-center gap-1 text-xs text-[#AFAFAF]">
-                                <Flag size={12} style={{ color: PRIORITY_COLORS[project.priority] }} />
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="flex items-center gap-1 text-[10px] text-[#AFAFAF]">
+                                <Flag size={10} style={{ color: PRIORITY_COLORS[project.priority] }} />
                                 <span className="font-semibold capitalize">{project.priority}</span>
                               </div>
-                              <div className="flex items-center gap-1 text-xs text-[#AFAFAF]">
-                                <Clock size={12} />
+                              <div className="flex items-center gap-1 text-[10px] text-[#AFAFAF]">
+                                <Clock size={10} />
                                 <span className="font-semibold">{project.tasks.length} tasks</span>
                               </div>
                             </div>
 
-                            <div className="progress-bar">
+                            <div className="progress-bar !h-[6px]">
                               <div
                                 className="progress-fill"
                                 style={{
@@ -113,7 +113,7 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                                 }}
                               />
                             </div>
-                            <p className="text-xs font-bold text-[#AFAFAF] mt-1">{progress}% complete</p>
+                            <p className="text-[10px] font-bold text-[#AFAFAF] mt-0.5">{progress}%</p>
                           </div>
                         )}
                       </Draggable>

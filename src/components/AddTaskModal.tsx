@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { projects } from '@/lib/data';
+import { getActiveProjects } from '@/lib/data';
 
 interface AddTaskModalProps {
   onClose: () => void;
@@ -25,6 +25,8 @@ export default function AddTaskModal({ onClose, onAdd, preselectedProjectId }: A
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const activeProjects = getActiveProjects();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !projectId || !startDate || !endDate) return;
@@ -35,61 +37,61 @@ export default function AddTaskModal({ onClose, onAdd, preselectedProjectId }: A
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-black">New Task</h2>
-          <button onClick={onClose} className="p-2 hover:bg-[#F0F0F0] rounded-xl transition-colors">
-            <X size={20} />
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-black">New Task</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-[#F0F0F0] rounded-xl transition-colors">
+            <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <div>
-            <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">TASK NAME</label>
+            <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">TASK NAME</label>
             <input
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full p-3 border-2 border-[#E5E5E5] rounded-xl font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
+              className="w-full p-2.5 border-2 border-[#E5E5E5] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
               placeholder="e.g. Create wireframes"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">DESCRIPTION</label>
+            <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">DESCRIPTION</label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full p-3 border-2 border-[#E5E5E5] rounded-xl font-semibold focus:outline-none focus:border-[#4285F4] transition-colors resize-none"
-              rows={3}
+              className="w-full p-2.5 border-2 border-[#E5E5E5] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4285F4] transition-colors resize-none"
+              rows={2}
               placeholder="What needs to be done..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">PROJECT</label>
+            <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">PROJECT</label>
             <select
               value={projectId}
               onChange={e => setProjectId(e.target.value)}
-              className="w-full p-3 border-2 border-[#E5E5E5] rounded-xl font-semibold focus:outline-none focus:border-[#4285F4] transition-colors bg-white"
+              className="w-full p-2.5 border-2 border-[#E5E5E5] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4285F4] transition-colors bg-white"
               required
             >
               <option value="">Select a project...</option>
-              {projects.map(p => (
+              {activeProjects.map(p => (
                 <option key={p.id} value={p.id}>{p.title}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">PRIORITY</label>
+            <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">PRIORITY</label>
             <div className="flex gap-2">
               {['low', 'medium', 'high'].map(p => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => setPriority(p)}
-                  className={`flex-1 py-2 px-4 rounded-xl font-bold text-sm border-2 transition-all capitalize ${
+                  className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs border-2 transition-all capitalize ${
                     priority === p
                       ? p === 'high' ? 'bg-[#EA4335] text-white border-[#EA4335]'
                         : p === 'medium' ? 'bg-[#FBBC04] text-white border-[#FBBC04]'
@@ -105,28 +107,28 @@ export default function AddTaskModal({ onClose, onAdd, preselectedProjectId }: A
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">START DATE</label>
+              <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">START DATE</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={e => setStartDate(e.target.value)}
-                className="w-full p-3 border-2 border-[#E5E5E5] rounded-xl font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
+                className="w-full p-2.5 border-2 border-[#E5E5E5] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1 text-[#AFAFAF]">END DATE</label>
+              <label className="block text-[10px] font-bold mb-1 text-[#AFAFAF]">END DATE</label>
               <input
                 type="date"
                 value={endDate}
                 onChange={e => setEndDate(e.target.value)}
-                className="w-full p-3 border-2 border-[#E5E5E5] rounded-xl font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
+                className="w-full p-2.5 border-2 border-[#E5E5E5] rounded-xl text-xs font-semibold focus:outline-none focus:border-[#4285F4] transition-colors"
                 required
               />
             </div>
           </div>
 
-          <button type="submit" className="btn-primary btn-green mt-2 w-full text-center">
+          <button type="submit" className="btn-primary btn-green mt-1 w-full text-center !text-xs">
             Create Task
           </button>
         </form>
