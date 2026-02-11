@@ -7,6 +7,17 @@ import GanttChart from '@/components/GanttChart';
 import AddProjectModal from '@/components/AddProjectModal';
 import AddTaskModal from '@/components/AddTaskModal';
 import { Plus, ListTodo } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] as const } },
+};
 
 export default function ProjectsPage() {
   const [showAddProject, setShowAddProject] = useState(false);
@@ -14,40 +25,45 @@ export default function ProjectsPage() {
   const activeProjects = getActiveProjects();
 
   return (
-    <div>
+    <motion.div variants={container} initial="hidden" animate="show">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <motion.div variants={item} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-[#3C3C3C]">Projects</h1>
-          <p className="text-[#AFAFAF] font-semibold text-xs sm:text-sm mt-0.5">Manage your projects and tasks</p>
+          <h1 className="text-xl sm:text-2xl font-black text-foreground">Projects</h1>
+          <p className="text-muted-foreground font-semibold text-xs sm:text-sm mt-0.5">Manage your projects and tasks</p>
         </div>
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={() => setShowAddTask(true)}
-            className="btn-secondary flex items-center gap-1.5 !py-2 !px-3 !text-xs"
+            variant="outline"
+            size="sm"
+            className="gap-1.5 rounded-xl"
           >
             <ListTodo size={15} />
             <span className="hidden sm:inline">Add Task</span>
             <span className="sm:hidden">Task</span>
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setShowAddProject(true)}
-            className="btn-primary flex items-center gap-1.5 !py-2 !px-3 !text-xs"
+            size="sm"
+            className="gap-1.5 rounded-xl"
           >
             <Plus size={15} />
             <span className="hidden sm:inline">New Project</span>
             <span className="sm:hidden">Project</span>
-          </button>
+          </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Kanban Board */}
-      <div className="mb-8">
+      <motion.div variants={item} className="mb-8">
         <KanbanBoard projects={activeProjects} />
-      </div>
+      </motion.div>
 
       {/* Gantt Chart */}
-      <GanttChart projects={activeProjects} />
+      <motion.div variants={item}>
+        <GanttChart projects={activeProjects} />
+      </motion.div>
 
       {showAddProject && (
         <AddProjectModal
@@ -62,6 +78,6 @@ export default function ProjectsPage() {
           onAdd={(t) => console.log('New task:', t)}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -6,6 +6,9 @@ import { Project, KanbanColumn, COLUMN_TITLES, COLUMN_COLORS, PRIORITY_COLORS } 
 import { getClientById } from '@/lib/data';
 import { Clock, Flag, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 
 interface KanbanBoardProps {
   projects: Project[];
@@ -50,9 +53,9 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
               <h3 className="font-black text-xs uppercase tracking-wide">
                 {COLUMN_TITLES[col]}
               </h3>
-              <span className="ml-auto bg-white border-2 border-[#E5E5E5] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-bold text-[#AFAFAF]">
+              <Badge variant="secondary" className="ml-auto text-[10px] h-6 w-6 justify-center rounded-full p-0">
                 {getColumnProjects(col).length}
-              </span>
+              </Badge>
             </div>
 
             <Droppable droppableId={col}>
@@ -61,7 +64,7 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={`min-h-[180px] rounded-2xl transition-colors ${
-                    snapshot.isDraggingOver ? 'bg-[#E8F0FE]' : ''
+                    snapshot.isDraggingOver ? 'bg-primary/5' : ''
                   }`}
                 >
                   {getColumnProjects(col).map((project, index) => {
@@ -74,46 +77,41 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`duo-card mb-2 ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}
                           >
-                            <div
-                              className="w-full h-1.5 rounded-full mb-2"
-                              style={{ background: project.color }}
-                            />
+                            <Card className={`glass-card !py-0 !gap-0 border-transparent mb-2 ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}>
+                              <CardContent className="!px-3 !py-3">
+                                <div
+                                  className="w-full h-1.5 rounded-full mb-2"
+                                  style={{ background: project.color }}
+                                />
 
-                            <h4 className="font-bold text-xs mb-0.5">{project.title}</h4>
+                                <h4 className="font-bold text-xs mb-0.5">{project.title}</h4>
 
-                            {client && (
-                              <Link
-                                href={`/clients/${client.id}`}
-                                className="text-[10px] text-[#AFAFAF] font-semibold hover:text-[#4285F4] transition-colors flex items-center gap-0.5 mb-2"
-                              >
-                                {client.company}
-                                <ChevronRight size={10} />
-                              </Link>
-                            )}
+                                {client && (
+                                  <Link
+                                    href={`/clients/${client.id}`}
+                                    className="text-[10px] text-muted-foreground font-semibold hover:text-primary transition-colors flex items-center gap-0.5 mb-2"
+                                  >
+                                    {client.company}
+                                    <ChevronRight size={10} />
+                                  </Link>
+                                )}
 
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className="flex items-center gap-1 text-[10px] text-[#AFAFAF]">
-                                <Flag size={10} style={{ color: PRIORITY_COLORS[project.priority] }} />
-                                <span className="font-semibold capitalize">{project.priority}</span>
-                              </div>
-                              <div className="flex items-center gap-1 text-[10px] text-[#AFAFAF]">
-                                <Clock size={10} />
-                                <span className="font-semibold">{project.tasks.length} tasks</span>
-                              </div>
-                            </div>
+                                <div className="flex items-center gap-3 mb-2">
+                                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                    <Flag size={10} style={{ color: PRIORITY_COLORS[project.priority] }} />
+                                    <span className="font-semibold capitalize">{project.priority}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                    <Clock size={10} />
+                                    <span className="font-semibold">{project.tasks.length} tasks</span>
+                                  </div>
+                                </div>
 
-                            <div className="progress-bar !h-[6px]">
-                              <div
-                                className="progress-fill"
-                                style={{
-                                  width: `${progress}%`,
-                                  background: project.color,
-                                }}
-                              />
-                            </div>
-                            <p className="text-[10px] font-bold text-[#AFAFAF] mt-0.5">{progress}%</p>
+                                <Progress value={progress} className="h-1.5" />
+                                <p className="text-[10px] font-bold text-muted-foreground mt-0.5">{progress}%</p>
+                              </CardContent>
+                            </Card>
                           </div>
                         )}
                       </Draggable>
