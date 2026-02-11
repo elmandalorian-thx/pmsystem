@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { meetings, clients } from '@/lib/data';
-import { Mic, Calendar, Clock, CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Settings, Search, Flame } from 'lucide-react';
+import { Meeting } from '@/lib/types';
+import { Mic, Calendar, Clock, CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Settings, Search, Flame, FolderKanban } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import AddProjectModal from '@/components/AddProjectModal';
 import { motion } from 'framer-motion';
 
 const AVATAR_COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853', '#8E24AA'];
@@ -25,6 +27,7 @@ export default function MeetingsPage() {
   const [expandedMeetings, setExpandedMeetings] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirefliesSetup, setShowFirefliesSetup] = useState(false);
+  const [projectFromMeeting, setProjectFromMeeting] = useState<Meeting | null>(null);
 
   const toggleMeeting = (id: string) => {
     setExpandedMeetings(prev => {
@@ -217,6 +220,22 @@ export default function MeetingsPage() {
                         </div>
                       </div>
 
+                      {/* Create Project from Meeting */}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProjectFromMeeting(meeting);
+                        }}
+                        variant="outline"
+                        className="w-full gap-1.5 rounded-xl border-primary/30 text-primary hover:bg-primary/5"
+                      >
+                        <FolderKanban size={14} />
+                        Create Project from this Meeting
+                        <Badge variant="secondary" className="ml-auto text-[9px]" style={{ background: '#E8F0FE', color: '#4285F4' }}>
+                          {meeting.actionItems.length} tasks
+                        </Badge>
+                      </Button>
+
                       {/* Fireflies data */}
                       {meeting.firefliesId && (
                         <div className="bg-gradient-to-r from-[#FFF8E1] to-[#E8F0FE] rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -250,6 +269,19 @@ export default function MeetingsPage() {
           <p className="font-bold text-xs text-muted-foreground">No meetings found</p>
           <p className="text-[10px] text-border font-semibold">Try adjusting your search</p>
         </div>
+      )}
+
+      {/* Create Project from Meeting Modal */}
+      {projectFromMeeting && (
+        <AddProjectModal
+          onClose={() => setProjectFromMeeting(null)}
+          onAdd={(p) => console.log('New project from meeting:', p)}
+          preselectedClientId={projectFromMeeting.clientId}
+          prefilledTitle={projectFromMeeting.title.replace(/Meeting|Call|Sync|Review/gi, '').trim() + ' — Follow-up'}
+          prefilledDescription={projectFromMeeting.summary}
+          meetingActionItems={projectFromMeeting.actionItems}
+          meetingSource={projectFromMeeting.title}
+        />
       )}
 
       {/* Fireflies Setup Modal */}

@@ -78,14 +78,20 @@ export default function KanbanBoard({ projects, onProjectsChange }: KanbanBoardP
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <Card className={`glass-card !py-0 !gap-0 border-transparent mb-2 ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}>
-                              <CardContent className="!px-3 !py-3">
+                            <Card
+                              className={`!py-0 !gap-0 border border-border/60 mb-2 overflow-hidden ${snapshot.isDragging ? '!shadow-lg rotate-2' : ''}`}
+                              style={{
+                                background: `linear-gradient(180deg, ${project.color}18 0%, ${project.color}06 40%, #ffffff 100%)`,
+                              }}
+                            >
+                              <CardContent className="!px-3 !py-3 relative">
+                                {/* Subtle top accent line */}
                                 <div
-                                  className="w-full h-1.5 rounded-full mb-2"
-                                  style={{ background: project.color }}
+                                  className="absolute top-0 left-0 right-0 h-[3px]"
+                                  style={{ background: `linear-gradient(90deg, ${project.color}, ${project.color}80)` }}
                                 />
 
-                                <h4 className="font-bold text-xs mb-0.5">{project.title}</h4>
+                                <h4 className="font-bold text-xs mb-0.5 mt-0.5">{project.title}</h4>
 
                                 {client && (
                                   <Link

@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getClientById, getActiveProjectsByClient, getPastProjectsByClient, getMeetingsByClient, clients } from '@/lib/data';
-import { Mail, Phone, Building2, Calendar, ArrowLeft, Plus, Clock, Flag, CheckCircle2, Mic, ChevronDown, ChevronRight, FolderCheck } from 'lucide-react';
+import { Mail, Phone, Building2, Calendar, ArrowLeft, Plus, Clock, Flag, CheckCircle2, Mic, ChevronDown, ChevronRight, FolderCheck, FolderKanban } from 'lucide-react';
 import Link from 'next/link';
 import AddProjectModal from '@/components/AddProjectModal';
-import { PRIORITY_COLORS } from '@/lib/types';
+import { PRIORITY_COLORS, Meeting } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,7 @@ export default function ClientDetailPage() {
   const [showAddProject, setShowAddProject] = useState(false);
   const [expandedMeetings, setExpandedMeetings] = useState<Set<string>>(new Set());
   const [pastProjectsOpen, setPastProjectsOpen] = useState(false);
+  const [projectFromMeeting, setProjectFromMeeting] = useState<Meeting | null>(null);
 
   if (!client) {
     return (
@@ -333,6 +334,23 @@ export default function ClientDetailPage() {
                             </div>
                           </div>
 
+                          {/* Create Project from Meeting */}
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setProjectFromMeeting(meeting);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="w-full gap-1.5 rounded-xl border-primary/30 text-primary hover:bg-primary/5"
+                          >
+                            <FolderKanban size={14} />
+                            Create Project from Meeting
+                            <Badge variant="secondary" className="ml-auto text-[9px]" style={{ background: '#E8F0FE', color: '#4285F4' }}>
+                              {meeting.actionItems.length} tasks
+                            </Badge>
+                          </Button>
+
                           {meeting.firefliesId && (
                             <div className="bg-[#E8F0FE] rounded-xl p-2.5 flex items-center gap-2">
                               <span className="text-base">🔥</span>
@@ -352,6 +370,19 @@ export default function ClientDetailPage() {
           </TabsContent>
         </Tabs>
       </motion.div>
+
+      {/* Create Project from Meeting Modal */}
+      {projectFromMeeting && (
+        <AddProjectModal
+          onClose={() => setProjectFromMeeting(null)}
+          onAdd={(p) => console.log('New project from meeting:', p)}
+          preselectedClientId={projectFromMeeting.clientId}
+          prefilledTitle={projectFromMeeting.title.replace(/Meeting|Call|Sync|Review/gi, '').trim() + ' — Follow-up'}
+          prefilledDescription={projectFromMeeting.summary}
+          meetingActionItems={projectFromMeeting.actionItems}
+          meetingSource={projectFromMeeting.title}
+        />
+      )}
 
       {showAddProject && (
         <AddProjectModal
